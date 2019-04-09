@@ -8,11 +8,21 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private var bluetoothAdapter : BluetoothAdapter? = null
+    private var connectThread : ConnectThread? = null
+
+    private var inputStream : InputStream? = null
+    private var outputStream : OutputStream? = null
+
+    private var ready : Boolean = false
+
+    private val MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +50,11 @@ class MainActivity : AppCompatActivity() {
             Log.d("Device name : ",""+deviceName)
             Log.d("Device adress : ",""+deviceHardwareAddress)
             //RNBT-9E6F
+            if(deviceName.equals("RNBT-9E6F")){
+                connectThread = ConnectThread(device)
+                connectThread?.start()
+            }
+
         }
 
     }
@@ -48,7 +63,8 @@ class MainActivity : AppCompatActivity() {
 
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             //device.createRfcommSocketToServiceRecord(MY_UUID)
-            device.createRfcommSocketToServiceRecord(UUID.randomUUID())
+            Log.d("Creating Rfcomm sokcet","With "+device.name)
+            device.createRfcommSocketToServiceRecord(MY_UUID)
         }
 
         public override fun run() {
@@ -63,7 +79,17 @@ class MainActivity : AppCompatActivity() {
                 // The connection attempt succeeded. Perform work associated with
                 // the connection in a separate thread.
                 //manageMyConnectedSocket(socket)
+
+                inputStream = mmSocket?.inputStream
+                outputStream = mmSocket?.outputStream
+
+                outputStream?.write(1)
+
+
             }
+
+
+
         }
 
         // Closes the client socket and causes the thread to finish.
