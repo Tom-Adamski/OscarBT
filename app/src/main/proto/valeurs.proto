@@ -1,0 +1,23 @@
+// A very simple protocol definition, consisting of only
+// one message.
+
+syntax = "proto2";
+
+message SimpleMessage {
+    optional string timestamp = 1;
+    required float lv = 2;
+    required float t = 3;
+    required float t_brut = 4;
+    required float h = 5;
+    required float h_brut = 6;
+    required float pinval = 7;
+    required float lowcount = 8;
+    required float pourcentagelow = 9;
+    required float concentration = 10;
+    required float co = 11;
+    required float co_brut = 12;
+    required float no2 = 13;
+    required float no2_brut = 14;
+    required float o3 = 15;
+    required float o3_brut = 16;
+}
