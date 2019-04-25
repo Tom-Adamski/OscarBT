@@ -18,6 +18,8 @@ import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import Valeurs
+import android.util.Log
 
 
 class TerminalFragment : Fragment(), ServiceConnection, SerialListener {
@@ -33,6 +35,8 @@ class TerminalFragment : Fragment(), ServiceConnection, SerialListener {
     private var service: SerialService? = null
     private var initialStart = true
     private var connected = Connected.False
+
+    private var dataReceived : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,6 +185,15 @@ class TerminalFragment : Fragment(), ServiceConnection, SerialListener {
     }
 
     private fun receive(data: ByteArray) {
+        dataReceived += String(data)
+        Log.e("Data received",String(data))
+        //Log.e("All data",dataReceived)
+        if(dataReceived.endsWith("EndOfMsg")){
+            dataReceived = dataReceived.removeSuffix("EndOfMsg")
+            Log.e("All data",dataReceived)
+
+            dataReceived = ""
+        }
         receiveText?.append(String(data))
     }
 
