@@ -20,6 +20,7 @@ import android.widget.TextView
 import android.widget.Toast
 import Valeurs
 import android.util.Log
+import java.nio.charset.StandardCharsets
 
 
 class TerminalFragment : Fragment(), ServiceConnection, SerialListener {
@@ -185,16 +186,14 @@ class TerminalFragment : Fragment(), ServiceConnection, SerialListener {
     }
 
     private fun receive(data: ByteArray) {
-        dataReceived += String(data)
-        Log.e("Data received",String(data))
-        //Log.e("All data",dataReceived)
+        dataReceived += String(data, StandardCharsets.ISO_8859_1)
+
         if(dataReceived.endsWith("EndOfMsg")){
             dataReceived = dataReceived.removeSuffix("EndOfMsg")
-            Log.e("All data",dataReceived)
-
+            var message = Valeurs.SimpleMessage.parseFrom(dataReceived.toByteArray(StandardCharsets.ISO_8859_1))
             dataReceived = ""
+            receiveText?.append(message.toString())
         }
-        receiveText?.append(String(data))
     }
 
     private fun status(str: String) {
